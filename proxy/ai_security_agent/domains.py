@@ -59,15 +59,15 @@ KNOWN_ENDPOINTS: tuple[AiServiceEndpoint, ...] = (
     # Perplexity
     AiServiceEndpoint("www.perplexity.ai", "perplexity", "web_ui", "perplexity_web",
                       r"^/rest/sse/perplexity_ask$"),
-    AiServiceEndpoint("api.perplexity.ai", "perplexity", "api", "openai"),
+    AiServiceEndpoint("api.perplexity.ai", "perplexity", "api", "openai", verified=False),
 
     # Not yet captured: keep the permissive generic parser, flagged as unverified.
     # Microsoft Copilot chats over a WebSocket, which this add-on does not inspect yet.
     AiServiceEndpoint("copilot.microsoft.com", "microsoft", "web_ui", "web_ui", verified=False),
     AiServiceEndpoint("chat.mistral.ai", "mistral", "web_ui", "web_ui", verified=False),
-    AiServiceEndpoint("api.mistral.ai", "mistral", "api", "openai"),
+    AiServiceEndpoint("api.mistral.ai", "mistral", "api", "openai", verified=False),
     AiServiceEndpoint("grok.com", "xai", "web_ui", "web_ui", verified=False),
-    AiServiceEndpoint("api.x.ai", "xai", "api", "openai"),
+    AiServiceEndpoint("api.x.ai", "xai", "api", "openai", verified=False),
     AiServiceEndpoint("api.cohere.ai", "cohere", "api", "web_ui", verified=False),
 )
 

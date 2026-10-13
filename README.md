@@ -26,7 +26,7 @@ updated as work lands, don't let it drift from the code.
 | Backend ingestion API + event store | ✅ Working, tested (`backend/`) |
 | Dashboard (SIEM-style admin UI) | ✅ Working (`dashboard/`, React + TypeScript + Vite): summary tiles, breakdown by AI service and data type, filterable event table with per-event rationale, live auto-refresh, light/dark. No login yet. |
 | Local proxy test setup | ✅ Documented and repeatable — see `docs/LOCAL_PROXY_TESTING.md` (test CA is never installed system-wide) |
-| Fleet deployment (root CA distribution, PAC/GPO) | ⬜ Not started — design only; needs explicit sign-off before building |
+| Fleet deployment tooling (`deploy/`) | 🚧 Built and tested on one machine, **not yet piloted on a real fleet**: name-constrained per-client CA generator, PAC generator, Windows CA install/remove, PAC GPO create/remove, read-only deployment checker, proxy-host config. GPO scripts parse-checked and WhatIf-tested only (no domain available). See `docs/DEPLOYMENT.md` |
 | Auth / multi-tenant client separation | ⬜ Not started |
 
 ## Quick reference
@@ -46,4 +46,8 @@ cd backend && pytest tests/ -v
 cd dashboard && npm install && npm run dev
 
 # Run the proxy locally against real AI traffic: docs/LOCAL_PROXY_TESTING.md
+# Roll out to a client's fleet (CA, PAC, GPO, rollback): docs/DEPLOYMENT.md
+
+# Deployment tooling tests
+cd deploy && pytest tests/ -v
 ```

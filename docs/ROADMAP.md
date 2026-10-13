@@ -24,12 +24,18 @@
 - [ ] Auth (this needs to exist before this is ever pointed at real traffic)
 
 ## Phase 3 — Deployment
-- [ ] Root CA generation + trust distribution story (via Datto RMM, matching
-      existing MSP tooling)
-- [ ] PAC file / GPO proxy routing config generator
-- [ ] Per-provider cert-pinning compatibility check (some mobile AI apps may
-      pin — needs verification before claiming full coverage)
-- [ ] Disclosure notice template for client AUPs (non-code artifact)
+- [x] Per-client **name-constrained** inspection CA generator (a stolen key cannot
+      impersonate sites outside the AI-service list; enforcement verified)
+- [x] Trust distribution scripts for RMM/GPO: install (thumbprint + constraint checks,
+      `-WhatIf`) and rollback
+- [x] PAC generator driven by the service registry (verified hosts only by default, fail-open)
+- [x] PAC GPO create/remove scripts (unlinked by default, pilot-OU linking only)
+- [x] Read-only deployment checker; proxy-host config + systemd unit template
+- [x] Disclosure notice template for client AUPs (`docs/templates/`, needs counsel review)
+- [ ] **Pilot on a real domain**: run the GPO scripts against a test OU (not yet done)
+- [ ] Per-application cert-pinning compatibility check on the AI apps a client actually uses
+- [ ] Block or disable QUIC/HTTP3 to monitored hosts so browsers can't bypass the proxy
+- [ ] Firefox enterprise-roots policy; mobile/BYOD strategy
 
 ## Phase 4 — Multi-tenant / product-ization
 - [ ] Multi-client separation in backend (this becomes a real product across

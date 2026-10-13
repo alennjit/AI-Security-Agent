@@ -1,0 +1,34 @@
+# systemd unit template for the AI Security Agent inspection proxy (Linux proxy host).
+# UNTESTED TEMPLATE — adjust paths/user, then:  systemctl daemon-reload && systemctl enable --now aisa-proxy
+#
+# Layout assumed:
+#   /opt/aisa/app/           a checkout of this repo
+#   /opt/aisa/venv/          python venv with mitmproxy, httpx
+#   /etc/aisa/conf/          mitmproxy confdir: mitmproxy-ca.pem (PRIVATE KEY, mode 600), config.yaml
+#   /etc/aisa/aisa-proxy.env environment file (see aisa-proxy.env.example)
+
+[Unit]
+Description=AI Security Agent inspection proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=aisa
+Group=aisa
+EnvironmentFile=/etc/aisa/aisa-proxy.env
+Environment=PYTHONPATH=/opt/aisa/app/proxy
+ExecStart=/opt/aisa/venv/bin/mitmdump --set confdir=/etc/aisa/conf -s /opt/aisa/app/proxy/ai_security_agent/addon.py
+Restart=on-failure
+RestartSec=5
+
+# Hardening: this process holds the inspection CA's private key.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/etc/aisa/conf
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

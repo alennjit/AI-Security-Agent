@@ -82,11 +82,15 @@ AI-Security-Agent/
 
 - Do not store, log, or print raw secret/PII matches — redact at the point
   of detection, before the value leaves the classifier function.
-- Do not build TLS interception, root-CA distribution, or any client
-  deployment tooling without flagging it first — that's the part with real
-  legal/operational blast radius (a bad root CA push breaks every client
-  machine's TLS trust). Design docs and local dev/testing are fine to build
-  freely.
+- Deployment tooling (PAC/GPO, root-CA distribution) was **authorized by Alen
+  on 2026-10-14** and lives in `deploy/`. It is bounded: the CA must stay
+  per-client and **name-constrained** (never an unconstrained CA); every script
+  that changes a machine keeps `-WhatIf` and a rollback; GPOs are created
+  unlinked; the PAC routes verified hosts only by default and fails open. Never
+  run these against Alen's own machine, a client, or a domain unless he
+  explicitly says so — generating artifacts and testing in WhatIf/scratch
+  folders is fine. Widening the CA's permitted names or going fail-closed
+  needs his decision.
 - Do not add per-action user notifications/popups to the proxy or agent —
   the consent model is disclosure-at-policy-level, not runtime interruption.
   If this changes, it's Alen's call, not a default to drift into.

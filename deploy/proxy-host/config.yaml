@@ -1,0 +1,22 @@
+# mitmproxy configuration for the AI Security Agent inspection proxy.
+# Copy to the proxy's confdir (the folder holding mitmproxy-ca.pem) as `config.yaml`.
+
+# REQUIRED. Do not copy the upstream server's certificate names into the forged certificate.
+# The inspection CA is name-constrained to the AI-service hostnames; real certificates for hosts
+# like gemini.google.com list dozens of unrelated names (*.google.com, ...), and a forged copy of
+# them would be rejected by clients. With this off, the forged certificate carries only the host
+# the client asked for. (Verified: with it on, Gemini and Perplexity fail; with it off, they work.)
+upstream_cert: false
+
+# Listen on the internal interface only — never a public address. Bind to the proxy host's LAN IP
+# and firewall the port to the client subnets (see docs/DEPLOYMENT.md).
+listen_port: 8080
+# listen_host: 10.0.0.5
+
+# Refuse clients that are not on private networks (mitmproxy default; keep it).
+block_global: true
+
+# Never turn this on: it would let a man-in-the-middle impersonate an AI service to the proxy.
+ssl_insecure: false
+
+termlog_verbosity: info
