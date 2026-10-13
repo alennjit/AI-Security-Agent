@@ -21,8 +21,8 @@ updated as work lands, don't let it drift from the code.
 |---|---|
 | AI service domain/endpoint registry | ✅ Working (`proxy/ai_security_agent/domains.py`) |
 | DLP content classifiers (secrets, PII, confidential markers) | ✅ Working, tested (`proxy/ai_security_agent/dlp/`) |
-| Per-provider prompt extractors (OpenAI/Anthropic/Google/generic web UI) | ✅ Working, tested (`proxy/ai_security_agent/extractors/`) |
-| mitmproxy addon wiring extractors → classifiers → backend | ✅ Validated end to end on live traffic from a local test proxy (OpenAI, Anthropic, Gemini API requests); non-blocking event delivery, gzip + size-limit handling, per-client IP. 6 tests. Browser/web-UI traffic not yet validated. |
+| Per-provider prompt extractors (API formats + Gemini, Perplexity, ChatGPT, Claude web UIs) | ✅ Working, tested (`proxy/ai_security_agent/extractors/`); endpoint-aware registry matches host + path so analytics beacons are ignored |
+| mitmproxy addon wiring extractors → classifiers → backend | ✅ Validated end to end on live traffic from a local test proxy (OpenAI, Anthropic, Gemini API requests); non-blocking event delivery, gzip + size-limit handling, per-client IP. 6 tests. Browser sessions verified for Gemini and Perplexity; ChatGPT and claude.ai parsers written but unverified; Copilot (WebSocket) unsupported — see `docs/LOCAL_PROXY_TESTING.md`. |
 | Backend ingestion API + event store | ✅ Working, tested (`backend/`) |
 | Dashboard (SIEM-style admin UI) | ✅ Working (`dashboard/`, React + TypeScript + Vite): summary tiles, breakdown by AI service and data type, filterable event table with per-event rationale, live auto-refresh, light/dark. No login yet. |
 | Local proxy test setup | ✅ Documented and repeatable — see `docs/LOCAL_PROXY_TESTING.md` (test CA is never installed system-wide) |

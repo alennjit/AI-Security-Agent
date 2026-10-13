@@ -9,9 +9,12 @@
 - [x] Backend ingestion API (FastAPI) + event store (SQLite)
 - [x] mitmproxy addon validated against live API traffic (OpenAI, Anthropic,
       Gemini) through a local test proxy — see `docs/LOCAL_PROXY_TESTING.md`
-- [ ] Validate browser web-UI traffic (chatgpt.com, claude.ai, gemini.google.com):
-      capture real requests and compare against the generic web-UI extractor
-- [ ] Streaming / WebSocket / multipart upload bodies
+- [x] Browser web-UI traffic: Gemini and Perplexity captured from real browser
+      sessions, parsers verified; endpoint-aware registry ignores telemetry that echoes prompts
+- [ ] ChatGPT and claude.ai: capture from signed-in sessions (ChatGPT blocks
+      automation via Cloudflare; claude.ai needs a login). Parsers exist but are unverified
+- [ ] Microsoft Copilot: chats over a WebSocket — needs a message-level hook
+- [ ] Multipart uploads / file attachments and streaming request bodies
 
 ## Phase 2 — Dashboard
 - [x] React + TypeScript + Vite dashboard (mirrors Lightweight-SIEM)

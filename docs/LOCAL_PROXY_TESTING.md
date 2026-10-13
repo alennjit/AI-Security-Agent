@@ -64,9 +64,38 @@ To simulate multiple devices, add `--interface 127.0.0.2` (or `.3`, `.4`) to cur
   connection. Browsers and API clients that use the system or a supplied CA do not.
 - **Streaming and very large bodies**: bodies over `AISA_MAX_BODY_BYTES` (2 MB) are skipped.
 
-## What has been validated
+## Coverage — what has and hasn't been validated
 
-OpenAI chat completions, Anthropic Messages and Gemini `generateContent` API
-requests: flagged prompts produce redacted events; clean prompts and unrelated
-hosts produce none. Browser web-UI traffic (chatgpt.com, claude.ai, gemini.google.com)
-still needs capture-and-compare against the generic web-UI extractor.
+| Service | Where | Status |
+|---|---|---|
+| OpenAI, Anthropic, Gemini | API | Verified on live traffic |
+| Gemini | Web app | Verified in a real browser session (`f.req` form field → JSON → JSON string → `[0][0]`) |
+| Perplexity | Web app | Verified in a real browser session (`query_str`); analytics beacons that echo the prompt are ignored by path |
+| ChatGPT | Web app | **Unverified** — Cloudflare blocks automated browsers; parser follows the commonly reported format |
+| claude.ai | Web app | **Unverified** — needs a signed-in session |
+| Microsoft Copilot | Web app | **Unsupported** — chats over a WebSocket |
+| Mistral, Grok | Web app | Unverified — generic fallback parser only |
+
+Each registry entry in `proxy/ai_security_agent/domains.py` carries a `verified` flag.
+
+## Capturing a new web UI
+
+Chat UIs use undocumented request formats that change. To add or verify one, record
+the *structure* of its requests (never the prompt text) with the capture tool:
+
+```bash
+cd proxy
+AISA_CANARY=CANARY7Q2X9 AISA_SHAPES_OUT=E:/aisa-dev/captures/shapes.jsonl \
+PYTHONPATH="$(pwd)" mitmdump --listen-host 127.0.0.1 --listen-port 8081 \
+    --set confdir=E:/aisa-dev/mitm-conf -s tools/capture_shapes.py
+```
+
+Type a prompt containing your canary string into the chat UI (through a throwaway browser
+profile that uses the proxy). Each captured POST is written as one JSON line in which every
+string is replaced by `<str:LEN>` and the canary's JSON path is recorded — that path is what
+an extractor needs. Then add an extractor module, a registry entry with a `path_pattern`
+that selects *only* the submit endpoint, and tests built from the captured structure.
+
+For an automated browser, launch a fresh profile with `--proxy-server=http://127.0.0.1:8081`
+and `--ignore-certificate-errors`. Use a throwaway profile only: it must never be your
+everyday browser.

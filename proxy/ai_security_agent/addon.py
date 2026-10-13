@@ -23,13 +23,14 @@ from typing import Any
 import httpx
 
 from ai_security_agent.dlp.classifiers import ClassificationResult, scan
-from ai_security_agent.domains import AiServiceEndpoint, lookup_host
+from ai_security_agent.domains import AiServiceEndpoint, lookup_request
 
 logger = logging.getLogger("ai_security_agent")
 
 BACKEND_EVENTS_URL = os.environ.get("AISA_BACKEND_EVENTS_URL", "http://127.0.0.1:8000/events")
 MAX_BODY_BYTES = int(os.environ.get("AISA_MAX_BODY_BYTES", str(2 * 1024 * 1024)))
 POST_TIMEOUT_SECONDS = 5.0
+SUBMIT_METHODS = frozenset({"POST", "PUT", "PATCH"})
 
 
 def build_event(
@@ -67,8 +68,10 @@ class AiSecurityAgentAddon:
         self._pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="aisa-post")
 
     def request(self, flow: Any) -> None:
+        if flow.request.method not in SUBMIT_METHODS:
+            return
         host = flow.request.pretty_host
-        endpoint = lookup_host(host)
+        endpoint = lookup_request(host, flow.request.path)
         if endpoint is None:
             return
 

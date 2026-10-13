@@ -13,8 +13,11 @@ from ai_security_agent.addon import AiSecurityAgentAddon
 
 
 class FakeRequest:
-    def __init__(self, host: str, body: bytes, gzipped: bool = False) -> None:
+    def __init__(self, host: str, body: bytes, gzipped: bool = False,
+                 path: str = "/v1/messages", method: str = "POST") -> None:
         self.pretty_host = host
+        self.path = path
+        self.method = method
         self._plain = body
         self.raw_content = gzip.compress(body) if gzipped else body
 
@@ -22,9 +25,10 @@ class FakeRequest:
         return self._plain
 
 
-def make_flow(host: str, body: bytes, gzipped: bool = False) -> SimpleNamespace:
+def make_flow(host: str, body: bytes, gzipped: bool = False, path: str = "/v1/messages",
+              method: str = "POST") -> SimpleNamespace:
     return SimpleNamespace(
-        request=FakeRequest(host, body, gzipped),
+        request=FakeRequest(host, body, gzipped, path, method),
         client_conn=SimpleNamespace(peername=("192.168.1.77", 51234)),
     )
 
@@ -80,3 +84,26 @@ def test_malformed_json_does_not_crash(posted):
 def test_gzipped_body_is_decoded(posted):
     run(make_flow("api.anthropic.com", anthropic_body("ssn 219-09-9999"), gzipped=True))
     assert len(posted) == 1
+
+
+GEMINI_SUBMIT = "/_/BardChatUi/data/assistant.lamda.BardFrontendService/StreamGenerate"
+
+
+def test_gemini_web_prompt_is_flagged(posted):
+    from tests.test_web_extractors import gemini_body
+    run(make_flow("gemini.google.com", gemini_body("aws AKIAIOSFODNN7EXAMPLE"), path=GEMINI_SUBMIT))
+    assert len(posted) == 1
+    assert posted[0]["provider"] == "google" and posted[0]["surface"] == "web_ui"
+    assert "AKIAIOSFODNN7EXAMPLE" not in json.dumps(posted[0])
+
+
+def test_perplexity_prompt_flagged_once_and_analytics_beacon_ignored(posted):
+    body = json.dumps({"query_str": "ssn 219-09-9999", "event_data": {"queryStr": "ssn 219-09-9999"}}).encode()
+    run(make_flow("www.perplexity.ai", body, path="/rest/sse/perplexity_ask"))
+    run(make_flow("www.perplexity.ai", body, path="/rest/event/analytics"))
+    assert len(posted) == 1
+
+
+def test_get_requests_are_never_inspected(posted):
+    run(make_flow("api.anthropic.com", anthropic_body("AKIAIOSFODNN7EXAMPLE"), method="GET"))
+    assert posted == []
