@@ -30,6 +30,7 @@ class Event(Base):
     rationale: Mapped[str] = mapped_column(String)
     categories: Mapped[list[str]] = mapped_column(JSON)
     finding_count: Mapped[int] = mapped_column(Integer)
+    client_ip: Mapped[str | None] = mapped_column(String, nullable=True, index=True)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime, default=_utcnow, index=True
     )

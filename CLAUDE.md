@@ -40,8 +40,11 @@ to [Lightweight-SIEM](https://github.com/alennjit/Lightweight-SIEM).
   classifiers, POSTs findings to the backend.
 - **backend/** — Python 3.11+, FastAPI + SQLAlchemy + SQLite (dev) /
   Postgres (prod, later). Ingests events, exposes them for the dashboard.
-- **dashboard/** — React + TypeScript + Vite, same as Lightweight-SIEM.
-  Not yet scaffolded — see `docs/ROADMAP.md`.
+- **dashboard/** — React + TypeScript + Vite, same stack and color tokens as
+  Lightweight-SIEM. Working (event feed, breakdowns, filters, live refresh); no
+  auth yet — see `docs/ROADMAP.md`. Its `node_modules` may be a junction to
+  `E:\aisa-dev\dashboard\node_modules` on Alen's machine (C: space); a fresh
+  `npm install` replaces the junction with a real folder.
 - **deploy/** — root CA generation + distribution notes, proxy PAC/GPO
   config. This is where client deployment (via Datto RMM, matching Alen's
   existing MSP tooling) will live. Not yet built.
@@ -72,7 +75,7 @@ AI-Security-Agent/
 │   │   ├── db.py
 │   │   └── api/events.py     ← POST/GET /events
 │   └── tests/
-└── dashboard/                 ← not yet scaffolded
+└── dashboard/                 ← React/TS/Vite admin UI (working, no auth yet)
 ```
 
 ## What NOT to do

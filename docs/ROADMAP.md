@@ -7,12 +7,17 @@
 - [x] Per-provider prompt extractors (OpenAI, Anthropic, Google, generic
       web-UI JSON)
 - [x] Backend ingestion API (FastAPI) + event store (SQLite)
-- [ ] mitmproxy addon validated against real captured traffic samples for
-      each provider (currently only unit-tested against synthetic payloads)
+- [x] mitmproxy addon validated against live API traffic (OpenAI, Anthropic,
+      Gemini) through a local test proxy — see `docs/LOCAL_PROXY_TESTING.md`
+- [ ] Validate browser web-UI traffic (chatgpt.com, claude.ai, gemini.google.com):
+      capture real requests and compare against the generic web-UI extractor
+- [ ] Streaming / WebSocket / multipart upload bodies
 
 ## Phase 2 — Dashboard
-- [ ] Scaffold React + TypeScript + Vite dashboard (mirror Lightweight-SIEM)
-- [ ] Event feed, risk-scored alert list, per-user/per-device drill-down
+- [x] React + TypeScript + Vite dashboard (mirrors Lightweight-SIEM)
+- [x] Event feed, summary tiles, breakdown by AI service and data type, filters,
+      live refresh, per-event rationale
+- [ ] Per-device drill-down view and time-range filter/trend chart
 - [ ] Auth (this needs to exist before this is ever pointed at real traffic)
 
 ## Phase 3 — Deployment

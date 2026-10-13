@@ -1,0 +1,89 @@
+:root {
+  color-scheme: light;
+  --brand: #2a78d6;
+  --brand-strong: #184f95;
+  --brand-tint: #eaf2fc;
+  --teal: #11907a;
+
+  --page: #f9f9f7;
+  --surface: #ffffff;
+  --text: #52514e;
+  --text-h: #0b0b0b;
+  --muted: #898781;
+  --border: #e1e0d9;
+  --code-bg: #f1f0ea;
+
+  --critical: #d03b3b;
+  --critical-bg: #fbe9e9;
+  --warning: #b8790f;
+  --warning-bg: #fef3de;
+  --good: #0a860a;
+  --good-bg: #e9f7e9;
+
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  font: 15px/1.5 var(--sans);
+  color: var(--text);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --brand: #3987e5;
+    --brand-strong: #86b6ef;
+    --brand-tint: #16233a;
+    --teal: #3fd1b4;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --text: #c3c2b7;
+    --text-h: #ffffff;
+    --muted: #8f8d86;
+    --border: #2c2c2a;
+    --code-bg: #232321;
+    --critical: #e66767;
+    --critical-bg: #391616;
+    --warning: #fab219;
+    --warning-bg: #332708;
+    --good: #3dc43d;
+    --good-bg: #12291a;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --brand: #3987e5;
+  --brand-strong: #86b6ef;
+  --brand-tint: #16233a;
+  --teal: #3fd1b4;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --text: #c3c2b7;
+  --text-h: #ffffff;
+  --muted: #8f8d86;
+  --border: #2c2c2a;
+  --code-bg: #232321;
+  --critical: #e66767;
+  --critical-bg: #391616;
+  --warning: #fab219;
+  --warning-bg: #332708;
+  --good: #3dc43d;
+  --good-bg: #12291a;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--page); }
+h1, h2 { color: var(--text-h); margin: 0; line-height: 1.2; }
+p { margin: 0 0 8px; }
+code { font-family: var(--mono); font-size: .9em; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; color: var(--text-h); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.strong { color: var(--text-h); font-weight: 600; }
+.mono { font-family: var(--mono); }

@@ -15,6 +15,7 @@ class EventCreate(BaseModel):
     rationale: str
     categories: list[str]
     finding_count: int = Field(ge=0)
+    client_ip: str | None = Field(default=None, max_length=64)
 
 
 class EventRead(EventCreate):

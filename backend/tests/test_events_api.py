@@ -61,3 +61,23 @@ def test_list_events_orders_newest_first(client: TestClient) -> None:
     response = client.get("/events")
     events = response.json()
     assert events[0]["host"] == "second.example.com"
+
+
+def test_event_records_client_ip(client: TestClient) -> None:
+    response = client.post("/events", json={**SAMPLE_EVENT, "client_ip": "192.168.1.50"})
+    assert response.status_code == 201
+    assert response.json()["client_ip"] == "192.168.1.50"
+    assert client.get("/events").json()[0]["client_ip"] == "192.168.1.50"
+
+
+def test_client_ip_is_optional(client: TestClient) -> None:
+    response = client.post("/events", json=SAMPLE_EVENT)
+    assert response.status_code == 201
+    assert response.json()["client_ip"] is None
+
+
+def test_cors_allows_dashboard_origin_only(client: TestClient) -> None:
+    allowed = client.get("/events", headers={"Origin": "http://localhost:5173"})
+    assert allowed.headers.get("access-control-allow-origin") == "http://localhost:5173"
+    blocked = client.get("/events", headers={"Origin": "https://evil.example"})
+    assert "access-control-allow-origin" not in blocked.headers
